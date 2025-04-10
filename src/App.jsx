@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import Description from "./components/Description/Description";
 import Options from "./components/Options/Options";
 import Feedback from "./components/Feedback/Feedback";
+import Notification from "./components/Notification/Notification";
 
 function App() {
+  const calcTotal = () => {
+    return +(reactions.good + reactions.neutral + reactions.bad);
+  };
+
   const [reactions, setReactions] = useState(
     JSON.parse(localStorage.getItem("reactions-stored")) ?? {
       good: 0,
@@ -12,7 +17,6 @@ function App() {
       bad: 0,
     }
   );
-
   useEffect(() => {
     localStorage.setItem("reactions-stored", JSON.stringify(reactions));
   }, [reactions]);
@@ -35,11 +39,16 @@ function App() {
       <Options
         addReaction={handleAddReaction}
         resetReactions={handleResetReactions}
+        total={calcTotal()}
       />
-      <Feedback
-        reactions={reactions}
-        total={reactions.good + reactions.neutral + reactions.bad}
-      />
+      {calcTotal() != 0 && (
+        <Feedback
+          reactions={reactions}
+          total={calcTotal()}
+          posItive={Math.round((reactions.good / calcTotal()) * 100)}
+        />
+      )}
+      {!calcTotal() && <Notification />}
     </>
   );
 }
