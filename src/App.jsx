@@ -45,7 +45,7 @@ function App() {
         <Feedback
           reactions={reactions}
           total={calcTotal()}
-          posItive={Math.round((reactions.good / calcTotal()) * 100)}
+          positive={Math.round((reactions.good / calcTotal()) * 100) || 0}
         />
       )}
       {!calcTotal() && <Notification />}
